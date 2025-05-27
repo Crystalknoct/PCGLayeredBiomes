@@ -25,7 +25,7 @@
 
 #include "CoreMinimal.h"
 #include "PCGSettings.h"
-#include "Elements/PCGPointProcessingElementBase.h"
+#include "Elements/PCGPointOperationElementBase.h"
 #include "LBPCGExtractBiomeData.generated.h"
 
 class ULBBiomesSettings;
@@ -55,7 +55,7 @@ protected:
 	//~End UPCGSettings interface
 };
 
-class PCGLAYEREDBIOMES_API FLBPCGExtractBiomeData final : public FPCGPointProcessingElementBase
+class PCGLAYEREDBIOMES_API FLBPCGExtractBiomeData final : public FPCGPointOperationElementBase
 {
 protected:
 	virtual bool ExecuteInternal(FPCGContext* Context) const override;

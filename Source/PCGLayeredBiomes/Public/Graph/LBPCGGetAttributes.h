@@ -25,7 +25,7 @@
 
 #include "CoreMinimal.h"
 #include "PCGSettings.h"
-#include "Elements/PCGPointProcessingElementBase.h"
+#include "Elements/PCGPointOperationElementBase.h"
 #include "LBPCGGetAttributes.generated.h"
 
 /**
@@ -56,7 +56,7 @@ public:
 	TArray<FName> Attributes;
 };
 
-class PCGLAYEREDBIOMES_API FLBPCGGetAttributes final : public FPCGPointProcessingElementBase
+class PCGLAYEREDBIOMES_API FLBPCGGetAttributes final : public FPCGPointOperationElementBase
 {
 protected:
 	virtual bool ExecuteInternal(FPCGContext* Context) const override;
@@ -89,7 +89,7 @@ public:
 	int DataIndex = 0;
 };
 
-class PCGLAYEREDBIOMES_API FLBPCGGetAllAttributesFrom final : public FPCGPointProcessingElementBase
+class PCGLAYEREDBIOMES_API FLBPCGGetAllAttributesFrom final : public FPCGPointOperationElementBase
 {
 protected:
 	virtual bool ExecuteInternal(FPCGContext* Context) const override;

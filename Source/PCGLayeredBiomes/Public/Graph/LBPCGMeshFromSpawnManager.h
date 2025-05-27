@@ -25,7 +25,7 @@
 
 #include "CoreMinimal.h"
 #include "Elements/PCGExecuteBlueprint.h"
-#include "Elements/PCGPointProcessingElementBase.h"
+#include "Elements/PCGPointOperationElementBase.h"
 #include "LBPCGMeshFromSpawnManager.generated.h"
 
 
@@ -65,9 +65,11 @@ public:
 	// The output attribute name to write, if not 'None'
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Settings)
 	FPCGAttributePropertyOutputNoSourceSelector ValueTarget;
+
+	virtual bool UseSeed() const override;
 };
 
-class PCGLAYEREDBIOMES_API FLBPCGMeshFromSpawnManager : public FPCGPointProcessingElementBase
+class PCGLAYEREDBIOMES_API FLBPCGMeshFromSpawnManager : public FPCGPointOperationElementBase
 {
 protected:
 	virtual bool ExecuteInternal(FPCGContext* Context) const override;

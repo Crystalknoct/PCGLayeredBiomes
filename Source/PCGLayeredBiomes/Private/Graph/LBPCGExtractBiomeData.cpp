@@ -31,6 +31,7 @@
 #include "PCGPin.h"
 #include "Biomes/LBBiomesSettings.h"
 #include "Biomes/Layers/LBBaseBiomeLayer.h"
+#include "PCGComponent.h"
 
 #if WITH_EDITOR
 #include "Helpers/PCGDynamicTrackingHelpers.h"
@@ -49,7 +50,7 @@ TArray<FPCGPinProperties> ULBPCGExtractBiomeData::OutputPinProperties() const
 {
 	TArray<FPCGPinProperties> PinProperties;
 	
-	PinProperties.Emplace("Layers", EPCGDataType::Param);
+	PinProperties.Emplace("Layers", EPCGDataType::Param, true, false);
 	PinProperties.Emplace("Biome Settings", EPCGDataType::Param, true, false);
 
 	return PinProperties;
@@ -87,7 +88,8 @@ bool FLBPCGExtractBiomeData::ExecuteInternal(FPCGContext* Context) const
 		return true;
 	}
 
-	const auto* Manager = ULBBiomesSpawnManager::GetManager(Context->SourceComponent.Get());
+	UPCGComponent* PCGComponent = Cast<UPCGComponent>(Context->ExecutionSource.Get());
+	const auto* Manager = PCGComponent ? ULBBiomesSpawnManager::GetManager(PCGComponent) : nullptr;
 	if (!Manager)
 	{
 		PCGE_LOG(Error, GraphAndLog, LOCTEXT("NoActorsManager", "Source Actor has no ULBBiomesSpawnManager component"));
@@ -107,7 +109,10 @@ bool FLBPCGExtractBiomeData::ExecuteInternal(FPCGContext* Context) const
 				OutData->Metadata->SetAttributeFromDataProperty(AttributeName, MetadataKey, BiomeSettings, *FieldIt, true);
 			}
 		
-			Context->OutputData.TaggedData.Add({OutData, {}, "Biome Settings", false});
+			FPCGTaggedData TaggedBiomeSettings;
+			TaggedBiomeSettings.Data = OutData;
+			TaggedBiomeSettings.Pin = "Biome Settings";
+			Context->OutputData.TaggedData.Add(TaggedBiomeSettings);
 		}
 		
 		for (const auto& Layer: BiomeSettings->Layers)
@@ -124,7 +129,10 @@ bool FLBPCGExtractBiomeData::ExecuteInternal(FPCGContext* Context) const
 				OutData->Metadata->SetAttributeFromProperty(Property->GetFName(), MetadataKey, Layer.Get(), Property, true);
 			}
 
-			Context->OutputData.TaggedData.Add({OutData, {}, "Layers", false});
+			FPCGTaggedData TaggedLayer;
+			TaggedLayer.Data = OutData;
+			TaggedLayer.Pin = "Layers";
+			Context->OutputData.TaggedData.Add(TaggedLayer);
 		}
 	}
 	else
@@ -145,7 +153,7 @@ void FLBPCGExtractBiomeData::GetDependenciesCrc(const FPCGDataCollection& InInpu
 	UPCGComponent* InComponent, FPCGCrc& OutCrc) const
 {
 	FPCGCrc Crc;
-	FPCGPointProcessingElementBase::GetDependenciesCrc(InInput, InSettings, InComponent, Crc);
+	FPCGPointOperationElementBase::GetDependenciesCrc(InInput, InSettings, InComponent, Crc);
 
 	const auto* Manager = ULBBiomesSpawnManager::GetManager(InComponent);
 	if (!Manager)

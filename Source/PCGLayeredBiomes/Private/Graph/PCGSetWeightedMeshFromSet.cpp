@@ -44,7 +44,11 @@
 ULBPCGMeshFromSpawnManagerSettings::ULBPCGMeshFromSpawnManagerSettings()
 {
 	ValueTarget.SetAttributeName(TEXT("Mesh"));
-	bUseSeed = true;
+}
+
+bool ULBPCGMeshFromSpawnManagerSettings::UseSeed() const
+{
+	return true;
 }
 
 TArray<FPCGPinProperties> ULBPCGMeshFromSpawnManagerSettings::InputPinProperties() const
@@ -194,7 +198,8 @@ bool FLBPCGMeshFromSpawnManager::ExecuteInternal(FPCGContext* Context) const
 		return true;
 	}
 	
-	const auto* Manager = ULBBiomesSpawnManager::GetManager(Context->SourceComponent.Get()); 
+	UPCGComponent* PCGComponent = Cast<UPCGComponent>(Context->ExecutionSource.Get());
+	const auto* Manager = PCGComponent ? ULBBiomesSpawnManager::GetManager(PCGComponent) : nullptr;
 	if (!Manager)
 	{
 		PCGE_LOG(Error, GraphAndLog, LOCTEXT("NoActorsManager", "Source Actor has no ULBBiomesSpawnManager component"));
@@ -259,7 +264,7 @@ void FLBPCGMeshFromSpawnManager::GetDependenciesCrc(const FPCGDataCollection& In
 	UPCGComponent* InComponent, FPCGCrc& OutCrc) const
 {
 	FPCGCrc Crc;
-	FPCGPointProcessingElementBase::GetDependenciesCrc(InInput, InSettings, InComponent, Crc);
+	FPCGPointOperationElementBase::GetDependenciesCrc(InInput, InSettings, InComponent, Crc);
 
 	const auto* Manager = ULBBiomesSpawnManager::GetManager(InComponent);
 	if (!Manager)

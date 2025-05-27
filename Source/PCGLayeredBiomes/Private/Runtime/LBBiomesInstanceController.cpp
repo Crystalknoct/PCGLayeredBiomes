@@ -158,7 +158,7 @@ void ULBBiomesInstanceController::OnInstanceIndexRelocated(UInstancedStaticMeshC
 {
 	if (auto* Indices = TrackedComponents.Find(Component))
 	{
-		checkSlow(Indices.Num() >= Component->GetNumInstances());
+		checkSlow(Indices->Num() >= Component->GetNumInstances());
 		
 		for (const auto& Item: Data)
 		{

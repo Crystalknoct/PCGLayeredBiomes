@@ -100,7 +100,10 @@ bool FLBPCGGetAttributes::ExecuteInternal(FPCGContext* Context) const
 			
 			if (PCGMetadataAttribute::CallbackWithRightType(InAttribute->GetTypeId(), MoveTemp(CreateAttribute)))
 			{
-				Context->OutputData.TaggedData.Add({OutData, {}, AttributeName, false});
+				FPCGTaggedData TaggedAttribute;
+				TaggedAttribute.Data = OutData;
+				TaggedAttribute.Pin = AttributeName;
+				Context->OutputData.TaggedData.Add(TaggedAttribute);
 			}
 		}
 	}
@@ -138,12 +141,19 @@ bool FLBPCGGetAllAttributesFrom::ExecuteInternal(FPCGContext* Context) const
 	const bool IsSuccess = InputParamsData.IsValidIndex(Settings->DataIndex);
 	const TObjectPtr<UPCGParamData> SuccessData = NewObject<UPCGParamData>();
 	ULBBiomesPCGUtils::CreateAndSetAttribute(NAME_None, SuccessData->Metadata, IsSuccess);
-	Context->OutputData.TaggedData.Add({SuccessData, {}, "Success", false});
+
+	FPCGTaggedData TaggedSuccess;
+	TaggedSuccess.Data = SuccessData;
+	TaggedSuccess.Pin = "Success";
+	Context->OutputData.TaggedData.Add(TaggedSuccess);
 
 	if (IsSuccess)
 	{
 		const auto& Params = InputParamsData[Settings->DataIndex];
-		Context->OutputData.TaggedData.Add({Params.Data, {}, "Params", false});
+		FPCGTaggedData TaggedParams;
+		TaggedParams.Data = Params.Data;
+		TaggedParams.Pin = "Params";
+		Context->OutputData.TaggedData.Add(TaggedParams);
 	}
 
 	return true;

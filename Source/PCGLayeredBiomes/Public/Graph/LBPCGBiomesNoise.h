@@ -25,7 +25,7 @@
 
 #include "CoreMinimal.h"
 #include "PCGSettings.h"
-#include "Elements/PCGPointProcessingElementBase.h"
+#include "Elements/PCGPointOperationElementBase.h"
 #include "Metadata/PCGAttributePropertySelector.h"
 
 #include "LBPCGBiomesNoise.generated.h"
@@ -100,7 +100,7 @@ public:
 	float Scale = 1.0f;
 };
 
-class PCGLAYEREDBIOMES_API FLBPCGBiomesNoise : public FPCGPointProcessingElementBase
+class PCGLAYEREDBIOMES_API FLBPCGBiomesNoise : public FPCGPointOperationElementBase
 {
 protected:
 	virtual bool ExecuteInternal(FPCGContext* Context) const override;
